@@ -25,13 +25,9 @@ class ReminderViewController :  UICollectionViewController{
     }
     
     
-    
-   
-    
-    
     required init?(coder: NSCoder) {
            fatalError("Always initialize ReminderViewController using init(reminder:)")
-       }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -73,6 +69,7 @@ class ReminderViewController :  UICollectionViewController{
           case .viewTitle: return reminder.title
           }
       }
+    
         
 
 }
