@@ -9,40 +9,25 @@ import Foundation
 import UIKit
 
 class ReminderListViewController: UICollectionViewController {
-
-    typealias DataSource=UICollectionViewDiffableDataSource<Int,String>
-    typealias Snapshot = NSDiffableDataSourceSnapshot<Int, String>
     
-    var dataSource:DataSource!
-    
+    var dataSource: DataSource!
+    var reminders: [Reminder] = Reminder.sampleData
+     
     override func viewDidLoad() {
         super.viewDidLoad()
-            
-        collectionView.collectionViewLayout = listLayout()
-            
-        let cellRegistration = UICollectionView.CellRegistration { (cell: UICollectionViewListCell,
-                                                                    indexPath: IndexPath,
-                                                                    itemIdentifier: String) in
-            let reminder = Reminder.sampleData[indexPath.item]
-            var contentConfiguration = cell.defaultContentConfiguration()
-
-            contentConfiguration.text=reminder.title
-            cell.contentConfiguration=contentConfiguration
-        }
-                
-       // let reminder=Reminder.sampleData[indexPath]
-        // Do any additional setup after loading the view.
         
+        let listLayout = listLayout()
+        collectionView.collectionViewLayout = listLayout
         
-        dataSource = DataSource(collectionView: collectionView) { (collectionView: UICollectionView, indexPath: IndexPath, itemIdentifier: String) in
+        let cellRegistration = UICollectionView.CellRegistration(handler: cellRegisterationHandler)
+            
+                        
+        dataSource = DataSource(collectionView: collectionView) { (collectionView: UICollectionView, indexPath: IndexPath, itemIdentifier: Reminder.ID) in
             return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: itemIdentifier)
         }
-            var snapshot=Snapshot()
-            snapshot.appendSections([0])
-            snapshot.appendItems(Reminder.sampleData.map{$0.title})
             
-            dataSource.apply(snapshot)
-            collectionView.dataSource=dataSource
+        updateSnapshot()
+        self.collectionView.dataSource=dataSource
     }
 
 
@@ -52,6 +37,15 @@ class ReminderListViewController: UICollectionViewController {
         listconfiguration.backgroundColor = .clear
         
         return UICollectionViewCompositionalLayout.list(using: listconfiguration)
+    }
+    
+    public func doneButtonAccessibilityAction(for reminder: Reminder) -> UIAccessibilityCustomAction {
+        let name = NSLocalizedString("Toggle completion", comment: "Reminder done button accessibility label")
+        let action = UIAccessibilityCustomAction(name: name) { [weak self] action in
+            return true
+        }
+        
+        return action
     }
     
 }
