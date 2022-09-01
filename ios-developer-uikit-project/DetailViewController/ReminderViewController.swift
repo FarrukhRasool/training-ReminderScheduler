@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 class ReminderViewController :  UICollectionViewController{
+    
     private typealias DataSource = UICollectionViewDiffableDataSource <Section, Row>
     private typealias SnapShot = NSDiffableDataSourceSnapshot <Section, Row>
     
@@ -48,41 +49,55 @@ class ReminderViewController :  UICollectionViewController{
         super.setEditing(editing, animated: animated)
         if editing {
             updateSnapshotForEditing()
-        }else{
+        }
+        else{
             updateSnapshotForViewing()
         }
+        
     }
-        func cellRegistrationHandler(cell: UICollectionViewListCell, indexPath:IndexPath, row: Row){
+    
+    
+    func cellRegistrationHandler(cell: UICollectionViewListCell, indexPath: IndexPath, row: Row) {
             
-            let section = section (for : indexPath)
-            switch(section, row){
-            case (_, .header(let title)):
-                        cell.contentConfiguration = headerConfiguration(for: cell, with: title)
-            case(.view, _) : do {
-                        cell.contentConfiguration = defaultConfiguration(for: cell, at: row)
-               // cell.tintColor = .todayPrimaryTint
-            }
-            case (.title, .editText(let title)):
-                cell.contentConfiguration = titleConfiguration(for: cell, with: title)
-            default :
-                fatalError("Unexpected combination of section and row.")
-            }
-            
-            
-            
-            
+        let section = section(for: indexPath)
+               print("Section = \(section); Row = \(row)")
+               switch (section, row) {
+               case (_, .header(let title)):
+                   cell.contentConfiguration = headerConfiguration(for: cell, with: title)
+               case (.view, _):
+                   cell.contentConfiguration = defaultConfiguration(for: cell, at: row)
+               case (.title, .editText(let title)):
+                   cell.contentConfiguration = titleConfiguration(for: cell, with: title)
+               case (.date, .editDate(let date)):
+                   cell.contentConfiguration = dateConfiguration(for: cell, with: date)
+               case (.notes, .editText(let notes)):
+                   cell.contentConfiguration = notesConfiguration(for: cell, with: notes)
+               default:
+                   fatalError("Unexpected combination of section and row.")
+               }
         }
+            
+            
+        
     
     func updateSnapshotForEditing(){
         var snapshot = SnapShot()
+    
+                snapshot.appendSections([.title, .date, .notes])
+                snapshot.appendItems([.header(Section.title.name), .editText(reminder.title)], toSection: .title)
+                snapshot.appendItems([.header(Section.date.name), .editDate(reminder.dueDate)], toSection: .date)
+                snapshot.appendItems([.header(Section.notes.name), .editText(reminder.notes)], toSection: .notes)
+                dataSource.apply(snapshot)
         
-        snapshot.appendSections([.date , .title, .notes])
-        snapshot.appendItems([.header(Section.title.name), .editText(reminder.title)], toSection: .title)
-        snapshot.appendItems([.header(Section.title.name)], toSection: .title)
-        snapshot.appendItems([.header(Section.date.name)], toSection: .date)
-        snapshot.appendItems([.header(Section.notes.name)], toSection: .notes)
-        
-        dataSource.apply(snapshot)
+//        snapshot.appendSections([.date , .title, .notes])
+//        snapshot.appendItems([.header(Section.title.name), .editText(reminder.title)], toSection: .title)
+//        snapshot.appendItems([.header(Section.title.name)], toSection: .title)
+//        snapshot.appendItems([.header(Section.date.name)], toSection: .date)
+//        snapshot.appendItems([.header(Section.notes.name)], toSection: .notes)
+//        snapshot.appendItems([.header(Section.date.name), .editDate(reminder.dueDate)], toSection: .date)
+//        snapshot.appendItems([.header(Section.notes.name), .editText(reminder.notes)], toSection: .notes)
+//
+//        dataSource.apply(snapshot)
         
         
     }
