@@ -62,6 +62,8 @@ class ReminderViewController :  UICollectionViewController{
                         cell.contentConfiguration = defaultConfiguration(for: cell, at: row)
                // cell.tintColor = .todayPrimaryTint
             }
+            case (.title, .editText(let title)):
+                cell.contentConfiguration = titleConfiguration(for: cell, with: title)
             default :
                 fatalError("Unexpected combination of section and row.")
             }
@@ -75,7 +77,7 @@ class ReminderViewController :  UICollectionViewController{
         var snapshot = SnapShot()
         
         snapshot.appendSections([.date , .title, .notes])
-        
+        snapshot.appendItems([.header(Section.title.name), .editText(reminder.title)], toSection: .title)
         snapshot.appendItems([.header(Section.title.name)], toSection: .title)
         snapshot.appendItems([.header(Section.date.name)], toSection: .date)
         snapshot.appendItems([.header(Section.notes.name)], toSection: .notes)
