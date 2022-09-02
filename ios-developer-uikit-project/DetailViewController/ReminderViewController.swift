@@ -15,15 +15,19 @@ class ReminderViewController :  UICollectionViewController{
     
     private var dataSource : DataSource!
     var reminder : Reminder
+    var workingReminder : Reminder
     
     init(reminder : Reminder) {
         
         self.reminder = reminder
+        self.workingReminder = reminder
         var listConfiguration = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
         listConfiguration.showsSeparators = false
         listConfiguration.headerMode = .firstItemInSection
         let listLayout = UICollectionViewCompositionalLayout.list(using: listConfiguration)
         super.init(collectionViewLayout: listLayout)
+        
+        
     }
     
     
@@ -48,10 +52,10 @@ class ReminderViewController :  UICollectionViewController{
     override func setEditing(_ editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
         if editing {
-            updateSnapshotForEditing()
+            prepareforEditing()
         }
         else{
-            updateSnapshotForViewing()
+            prepareforViewing()
         }
         
     }
@@ -89,15 +93,6 @@ class ReminderViewController :  UICollectionViewController{
                 snapshot.appendItems([.header(Section.notes.name), .editText(reminder.notes)], toSection: .notes)
                 dataSource.apply(snapshot)
         
-//        snapshot.appendSections([.date , .title, .notes])
-//        snapshot.appendItems([.header(Section.title.name), .editText(reminder.title)], toSection: .title)
-//        snapshot.appendItems([.header(Section.title.name)], toSection: .title)
-//        snapshot.appendItems([.header(Section.date.name)], toSection: .date)
-//        snapshot.appendItems([.header(Section.notes.name)], toSection: .notes)
-//        snapshot.appendItems([.header(Section.date.name), .editDate(reminder.dueDate)], toSection: .date)
-//        snapshot.appendItems([.header(Section.notes.name), .editText(reminder.notes)], toSection: .notes)
-//
-//        dataSource.apply(snapshot)
         
         
     }
@@ -121,6 +116,22 @@ class ReminderViewController :  UICollectionViewController{
         }
         
        
+    private func prepareforViewing(){
+        
+        if workingReminder != reminder{
+            workingReminder = reminder
+        }
+        updateSnapshotForViewing()
+        
+    }
+    
+    private  func prepareforEditing(){
+        
+        updateSnapshotForEditing()
+        
+        
+    }
+    
     
         
 
