@@ -54,9 +54,11 @@ class ReminderListViewController: UICollectionViewController {
     
 
     private func listLayout() -> UICollectionViewCompositionalLayout {
+        
         var listconfiguration = UICollectionLayoutListConfiguration(appearance: .grouped)
         listconfiguration.showsSeparators = false
         listconfiguration.backgroundColor = .clear
+        listconfiguration.trailingSwipeActionsConfigurationProvider = makeSwipeActions
         
         return UICollectionViewCompositionalLayout.list(using: listconfiguration)
     }
@@ -69,5 +71,14 @@ class ReminderListViewController: UICollectionViewController {
         
         return action
     }
-   
+    private func makeSwipeActions(for indexPath: IndexPath?) -> UISwipeActionsConfiguration? {
+            guard let indexPath = indexPath, let id = dataSource.itemIdentifier(for: indexPath) else { return nil }
+            let deleteActionTitle = NSLocalizedString("Delete", comment: "Delete action title")
+            let deleteAction = UIContextualAction(style: .destructive, title: deleteActionTitle) { [weak self] _, _, completion in
+                self?.deleteReminder(with: id)
+                self?.updateSnapshot()
+                completion(false)
+            }
+            return UISwipeActionsConfiguration(actions: [deleteAction])
+        }
 }
