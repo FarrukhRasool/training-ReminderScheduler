@@ -39,9 +39,17 @@ class ReminderListViewController: UICollectionViewController {
 
     func showDetail(for id: Reminder.ID) {
         let reminder = reminder(for: id)
-        let viewController = ReminderViewController(reminder: reminder)
+        let viewController = ReminderViewController(reminder: reminder) { [weak self] reminder in
+            self?.update(reminder, with: reminder.id)
+            self?.updateSnapshot(reloading: [reminder.id])
+            
+        }
+    
         navigationController?.pushViewController(viewController, animated: true)
     }
+    
+    
+    
 
     private func listLayout() -> UICollectionViewCompositionalLayout {
         var listconfiguration = UICollectionLayoutListConfiguration(appearance: .grouped)
@@ -59,5 +67,5 @@ class ReminderListViewController: UICollectionViewController {
         
         return action
     }
-    
+   
 }

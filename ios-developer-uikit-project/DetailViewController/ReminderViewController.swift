@@ -14,13 +14,23 @@ class ReminderViewController :  UICollectionViewController{
     
     
     private var dataSource : DataSource!
-    var reminder : Reminder
     var workingReminder : Reminder
+    var reminder: Reminder {
+           didSet {
+               onChange(reminder)
+           }
+       }
     
-    init(reminder : Reminder) {
+    
+    
+    var onChange: (Reminder)->Void
+    
+    
+    init(reminder : Reminder , onChange: @escaping (Reminder)->Void) {
         
         self.reminder = reminder
         self.workingReminder = reminder
+        self.onChange = onChange
         var listConfiguration = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
         listConfiguration.showsSeparators = false
         listConfiguration.headerMode = .firstItemInSection
@@ -34,6 +44,11 @@ class ReminderViewController :  UICollectionViewController{
     required init?(coder: NSCoder) {
            fatalError("Always initialize ReminderViewController using init(reminder:)")
     }
+    
+    @objc func didCancelEdit() {
+                workingReminder = reminder
+                setEditing(false, animated: true)
+        }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -117,16 +132,16 @@ class ReminderViewController :  UICollectionViewController{
         
        
     private func prepareforViewing(){
-        
+        navigationItem.leftBarButtonItem = nil
         if workingReminder != reminder{
-            workingReminder = reminder
+            reminder = workingReminder
         }
         updateSnapshotForViewing()
         
     }
     
     private  func prepareforEditing(){
-        
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(didCancelEdit))
         updateSnapshotForEditing()
         
         
