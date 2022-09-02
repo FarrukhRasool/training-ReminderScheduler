@@ -42,6 +42,9 @@ class ReminderListViewController: UICollectionViewController {
         let viewController = ReminderViewController(reminder: reminder)
         navigationController?.pushViewController(viewController, animated: true)
     }
+    
+    
+    
 
     private func listLayout() -> UICollectionViewCompositionalLayout {
         var listconfiguration = UICollectionLayoutListConfiguration(appearance: .grouped)
@@ -59,5 +62,5 @@ class ReminderListViewController: UICollectionViewController {
         
         return action
     }
-    
+   
 }

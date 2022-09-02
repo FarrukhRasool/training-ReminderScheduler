@@ -34,6 +34,11 @@ class ReminderViewController :  UICollectionViewController{
     required init?(coder: NSCoder) {
            fatalError("Always initialize ReminderViewController using init(reminder:)")
     }
+    
+    @objc func didCancelEdit() {
+                workingReminder = reminder
+                setEditing(false, animated: true)
+        }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -117,7 +122,7 @@ class ReminderViewController :  UICollectionViewController{
         
        
     private func prepareforViewing(){
-        
+        navigationItem.leftBarButtonItem = nil
         if workingReminder != reminder{
             workingReminder = reminder
         }
@@ -126,7 +131,7 @@ class ReminderViewController :  UICollectionViewController{
     }
     
     private  func prepareforEditing(){
-        
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(didCancelEdit))
         updateSnapshotForEditing()
         
         
