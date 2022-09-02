@@ -15,6 +15,7 @@ class ReminderViewController :  UICollectionViewController{
     
     private var dataSource : DataSource!
     var workingReminder : Reminder
+    var isAddingNewReminder = false
     var reminder: Reminder {
            didSet {
                onChange(reminder)
@@ -70,7 +71,11 @@ class ReminderViewController :  UICollectionViewController{
             prepareforEditing()
         }
         else{
+            if !isAddingNewReminder{
             prepareforViewing()
+            }else{
+                onChange(workingReminder)
+            }
         }
         
     }
